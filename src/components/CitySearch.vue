@@ -8,10 +8,9 @@
     </form>
     <load-spinner v-if="showLoading"></load-spinner>
     <ul class="cities" v-if="results && results.list.length > 0">
-      <li v-for="city in results.list">
+      <li v-for="city in results.list" v-bind:key="city.id">
         <h2>{{ city.name }}, {{ city.sys.country }}</h2>
         <p><router-link v-bind:to="{ name: 'CurrentWeather', params: { cityId: city.id } }">View Current Weather</router-link></p>
-
         <weather-summary v-bind:weatherData="city.weather"></weather-summary>
         <weather-data v-bind:weatherData="city.main"></weather-data>
         <p><button class="save" v-on:click="saveCity(city)">Save City to Favorites</button></p>
@@ -21,78 +20,77 @@
 </template>
 
 <script>
-import {API} from '@/common/api';
-import WeatherSummary from '@/components/WeatherSummary';
-import WeatherData from '@/components/WeatherData';
-import CubeSpinner from '@/components/CubeSpinner';
-import MessageContainer from '@/components/MessageContainer';
-import FavoriteCities from '@/components/FavoriteCities';
-
+import { API } from "@/common/api";
+import WeatherSummary from "@/components/WeatherSummary";
+import WeatherData from "@/components/WeatherData";
+import CubeSpinner from "@/components/CubeSpinner";
+import MessageContainer from "@/components/MessageContainer";
+import FavoriteCities from "@/components/FavoriteCities";
 
 export default {
-  name: 'CitySearch',
+  name: "CitySearch",
   components: {
-    'weather-summary': WeatherSummary,
-    'weather-data': WeatherData,
-    'load-spinner': CubeSpinner,
-    'message-container': MessageContainer,
-    'favorite-cities': FavoriteCities
+    "weather-summary": WeatherSummary,
+    "weather-data": WeatherData,
+    "load-spinner": CubeSpinner,
+    "message-container": MessageContainer,
+    "favorite-cities": FavoriteCities
   },
-  data () {
+  data() {
     return {
       results: null,
-      query: '',
+      query: "",
       showLoading: false,
       messages: [],
       favorites: []
-    }
+    };
   },
-  created () {
-    if (this.$ls.get('favoriteCities')){
-      this.favorites = this.$ls.get('favoriteCities');
+  created() {
+    if (this.$ls.get("favoriteCities")) {
+      this.favorites = this.$ls.get("favoriteCities");
     }
   },
   methods: {
-    saveCity: function (city) {
+    saveCity: function(city) {
       this.favorites.push(city);
-      this.$ls.set('favoriteCities', this.favorites);
+      this.$ls.set("favoriteCities", this.favorites);
     },
-    getCities: function () {
+    getCities: function() {
       this.results = null;
       this.showLoading = true;
 
-      let cacheLabel = 'citySearch_' + this.query;
+      let cacheLabel = "citySearch_" + this.query;
       let cacheExpiry = 15 * 60 * 1000; // Sets to 15 minutes
 
       // if data is stored in cacheLabel:
-      if (this.$ls.get(cacheLabel)){
-        console.log('Cached query detected.');
+      if (this.$ls.get(cacheLabel)) {
+        console.log("Cached query detected.");
         this.results = this.$ls.get(cacheLabel);
         this.showLoading = false;
       } else {
-        console.log('No cache available. Making API request.');
-        API.get('find', {
+        console.log("No cache available. Making API request.");
+        API.get("find", {
           params: {
-              q: this.query
+            q: this.query
           }
         })
-        .then(response => {
-          this.$ls.set(cacheLabel, response.data, cacheExpiry);
-          console.log('New query has been cached as: ' + cacheLabel);
-          this.results = response.data;
-          this.showLoading = false;
-        })
-        .catch(error => {
-          this.messages.push({
-            type: 'error',
-            text: error.message
+          .then(response => {
+            this.$ls.set(cacheLabel, response.data, cacheExpiry);
+            console.log("New query has been cached as: " + cacheLabel);
+            this.results = response.data;
+            this.showLoading = false;
+          })
+          .catch(error => {
+            this.messages.push({
+              type: "error",
+              text: error.message
+            });
+            this.showLoading = false;
           });
-          this.showLoading = false;
-        });     
       } // end of else statement
     } // end of getCities function
   } // end of methods
-} // end of export
+}; // end of export
 </script>
 
 <style scoped>
@@ -101,7 +99,8 @@ export default {
   border: solid red 1px;
   padding: 5px;
 }
-h1, h2 {
+h1,
+h2 {
   font-weight: normal;
 }
 
@@ -117,8 +116,6 @@ li {
   padding: 10px;
   margin: 5px;
 }
-
-
 
 a {
   color: #42b983;
