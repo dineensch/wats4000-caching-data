@@ -3,8 +3,13 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import VueLocalStorage from 'vue-ls';
 
-// TODO: Add vue-ls support by importing an configuring vue-ls
+let options = {
+  namespace: 'weather__'
+};
+
+Vue.use(VueLocalStorage, options);
 
 
 Vue.config.productionTip = false
