@@ -19,10 +19,9 @@ export default {
   },
   methods: {
     removeCity: function (city) {
-      // TODO: Add logic to remove a city from the `favoriteCities` array.
-      // Hint: Use `indexOf(city)` on the `this.favoriteCities` array and then use the `splice()` method
-
-      // TODO: Save the new favoriteCities array to the cache.
+      let cityIndex= this.favoriteCities.indexOf(city);
+      this.favoriteCities.splice(cityIndex, 1);
+      this.$ls.set('favoriteCities', this.favoriteCities);
     }
   }
 }

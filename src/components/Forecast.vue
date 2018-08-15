@@ -1,5 +1,6 @@
 <template>
   <div>
+
     <h2>Five Day Hourly Forecast <span v-if="weatherData"> for {{ weatherData.city.name }}, {{weatherData.city.country }}</span></h2>
     <message-container v-bind:messages="messages"></message-container>
     <p>
@@ -27,13 +28,15 @@ import WeatherData from '@/components/WeatherData';
 import CubeSpinner from '@/components/CubeSpinner';
 import MessageContainer from '@/components/MessageContainer';
 
+
 export default {
   name: 'Forecast',
   components: {
     'weather-summary': WeatherSummary,
     'weather-data': WeatherData,
     'message-container': MessageContainer,
-    'load-spinner': CubeSpinner
+    'load-spinner': CubeSpinner,
+
   },
   data () {
     return {
@@ -41,38 +44,40 @@ export default {
       messages: [],
       query: '',
       showLoading: false,
-      messages: []
+      messages: [],
+    
     }
   },
   created () {
     this.showLoading = true;
 
-    // TODO: Cache these API results using the City ID as the label
+    let cacheLabel = 'forecast_' + this.$route.params.cityId;
+    let cacheExpiry = 15 * 60 * 1000; // Sets to 15 minutes in milliseconds
 
-    // TODO: Create a cacheLabel value
-
-    // TODO: Create a cacheExpiry value set to 15 minutes in milliseconds
-
-    // TODO: Use a conditional to check if the API query has been cached
-    // If so, use that cached data
-    // If not, make the API call and cache the data with the cacheLabel and cacheExpiry defined above
-
-    API.get('forecast', {
-      params: {
-          id: this.$route.params.cityId
-      }
-    })
-    .then(response => {
+    if (this.$ls.get(cacheLabel)) {
+      console.log('Cache value detected.');
+      this.weatherData = this.$ls.get(cacheLabel);
       this.showLoading = false;
-      this.weatherData = response.data;
-    })
-    .catch(error => {
-      this.showLoading = false;
-      this.messages.push({
-        type: 'error',
-        text: error.message
+    } else {
+      console.log('No cache available. Making API request.');
+      API.get('forecast', {
+        params: {
+            id: this.$route.params.cityId
+        }
+      })
+      .then(response => {
+        this.$ls.set(cacheLabel, response.data, cacheExpiry);
+        this.showLoading = false;
+        this.weatherData = response.data;
+      })
+      .catch(error => {
+        this.showLoading = false;
+        this.messages.push({
+          type: 'error',
+          text: error.message
+        });
       });
-    });
+    }
   },
   filters: {
     formatDate: function (timestamp){
