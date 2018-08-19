@@ -4,22 +4,10 @@
         <li v-if="favoriteCities.length < 1">No favorites cities to display.</li>
        
         <li v-for="city in favoriteCities" v-bind:key="city.id">
+            <span><city-label v-bind:cityLabel="cityLabel"></city-label></span>  
             <router-link v-bind:to="{ name: 'CurrentWeather', params: { cityId: city.id } }">{{ city.name }}</router-link>
             <button v-on:click="removeCity(city)" class="remove">x</button>
             <span><city-label v-bind:cityLabel="cityLabel"></city-label></span>          
-          <!-- <p>
-            <span v-show="showLabel" class="city-label"> {{ cityLabel + ':' }} </span>
-            <router-link v-bind:to="{ name: 'CurrentWeather', params: { cityId: city.id } }">{{ city.name }}</router-link>
-            <button v-on:click="removeCity(city)" class="remove">x</button>
-            <button v-on:click="showForm = !showForm" class="addLabel">Add Label</button>
-              <span v-if="showForm">
-                <form v-on:submit="saveLabel">
-                  <input type="text" id="newLabel" v-model="newLabel">
-                  <button type="submit" class="addLabel">Update</button>
-                </form>
-              </span>            
-          </p> -->
-
         </li>
         
     </ul>
