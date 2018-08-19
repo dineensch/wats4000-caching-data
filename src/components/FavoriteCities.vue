@@ -2,26 +2,56 @@
     <ul class="favorite-cities">
         <li><h2>Favorite Cities</h2></li>
         <li v-if="favoriteCities.length < 1">No favorites cities to display.</li>
+       
         <li v-for="city in favoriteCities" v-bind:key="city.id">
-          <router-link v-bind:to="{ name: 'CurrentWeather', params: { cityId: city.id } }">{{ city.name }}</router-link> <button v-on:click="removeCity(city)" class="remove">x</button>
+            <router-link v-bind:to="{ name: 'CurrentWeather', params: { cityId: city.id } }">{{ city.name }}</router-link>
+            <button v-on:click="removeCity(city)" class="remove">x</button>
+            <span><city-label v-bind:cityLabel="cityLabel"></city-label></span>          
+          <!-- <p>
+            <span v-show="showLabel" class="city-label"> {{ cityLabel + ':' }} </span>
+            <router-link v-bind:to="{ name: 'CurrentWeather', params: { cityId: city.id } }">{{ city.name }}</router-link>
+            <button v-on:click="removeCity(city)" class="remove">x</button>
+            <button v-on:click="showForm = !showForm" class="addLabel">Add Label</button>
+              <span v-if="showForm">
+                <form v-on:submit="saveLabel">
+                  <input type="text" id="newLabel" v-model="newLabel">
+                  <button type="submit" class="addLabel">Update</button>
+                </form>
+              </span>            
+          </p> -->
+
         </li>
+        
     </ul>
 </template>
 
 <script>
+import CityLabels from "@/components/CityLabels";
 export default {
   name: 'FavoriteCities',
+  components: {
+    "city-label": CityLabels,
+  },
   data () {
-    return {}
+    return {
+      showForm: false,
+      showLabel: false,
+      cityLabel: '',
+      showLabel: false, 
+      newLabel: "", 
+    }
   },
   props: {
-    favoriteCities: Array
+    favoriteCities: Array,
   },
   methods: {
     removeCity: function (city) {
       let cityIndex= this.favoriteCities.indexOf(city);
       this.favoriteCities.splice(cityIndex, 1);
       this.$ls.set('favoriteCities', this.favoriteCities);
+    },
+    saveLabel: function() {
+      this.cityLabel.push(favorites)
     }
   }
 }
@@ -35,11 +65,29 @@ export default {
   width: 25%;
   float: right;
 }
+.city-label {
+  color: #2c3e50;
+  font-weight: 600;
+}
 .remove {
   font-size: 0.8rem;
   color: white;
   background: #AA0000;
   padding: 2px;
   cursor: pointer;
+}
+
+.addLabel {
+  font-size: 0.6rem;
+  color: white;
+  background: black;
+  padding: 2px;
+  cursor: pointer;
+  transition-duration: 0.4s;
+}
+
+.addLabel:hover {
+  background-color: white;
+  color: black;
 }
 </style>
