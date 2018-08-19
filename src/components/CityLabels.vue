@@ -1,13 +1,13 @@
-<template>
-    <span>
+<template v-for="favorites in favoriteCities" v-bind:key="favorites.id">
+      <span>
         <p class="city-label" v-if="newLabel.length != 0"> {{ newLabel }}</p>
         <button v-on:click="showForm = !showForm" class="addLabel">Add Label</button>
         <span v-if="showForm">
-          <form v-on:submit="saveLabel">
+          <form v-on:submit="saveLabel(favorites)">
             <input type="text" v-model="newLabel">
             <button type="submit" class="addLabel">Update</button>
           </form>
-        </span>              
+        </span>           
     </span>
 </template>
 
@@ -18,13 +18,16 @@ export default {
     return {
       showForm: false,
       newLabel: "",
+      favorites: [],
     }
   },
   props: {
     cityLabel: String,
   },
   methods: {
-    saveLabel: function () {
+    saveLabel: function(favorites) {
+      this.newLabel.push(favorites);
+      this.$ls.set("favoriteCities", this.newLabel);
   }
 }
 }
