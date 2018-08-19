@@ -26,6 +26,7 @@ import WeatherData from "@/components/WeatherData";
 import CubeSpinner from "@/components/CubeSpinner";
 import MessageContainer from "@/components/MessageContainer";
 import FavoriteCities from "@/components/FavoriteCities";
+import CityLabels from "@/components/CityLabels";
 
 export default {
   name: "CitySearch",
@@ -34,7 +35,8 @@ export default {
     "weather-data": WeatherData,
     "load-spinner": CubeSpinner,
     "message-container": MessageContainer,
-    "favorite-cities": FavoriteCities
+    "favorite-cities": FavoriteCities,
+    "city-label": CityLabels,
   },
   data() {
     return {
